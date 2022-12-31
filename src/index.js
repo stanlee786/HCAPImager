@@ -5,6 +5,13 @@ const functions = new Functions();
 const fs = require("node:fs");
 require("dotenv").config();
 
+// Check if result folder exists
+if (!fs.existsSync("./result")) {
+
+    // Create directory
+    fs.mkdirSync("./result");
+}
+
 // Counter
 let count = 0;
 
@@ -89,10 +96,10 @@ async function getCaptcha(userAgent, data, decoded) {
         const directory = resp.body.requester_question.en.split(" ")[6] ? resp.body.requester_question.en.substr(resp.body.requester_question.en.indexOf(" ") + 31): ""
 
         // Check if directory exists
-        if (!fs.existsSync(`result/${directory}`)) {
+        if (!fs.existsSync(`./result/${directory}`)) {
 
             // Make directory
-            fs.mkdirSync(`result/${directory}`)
+            fs.mkdirSync(`./result/${directory}`)
         }
         
         // For loop for all images
@@ -114,7 +121,7 @@ async function getCaptcha(userAgent, data, decoded) {
                 const buffer = Buffer.from(arrayBuffer);
 
                 // Save image
-                fs.writeFile(`result/${directory}/${fileName}.jpg`, buffer, (err) => {
+                fs.writeFile(`./result/${directory}/${fileName}.jpg`, buffer, (err) => {
 
                     // Check for error
                     if (err) functions.logError(err);
