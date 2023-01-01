@@ -140,7 +140,7 @@ async function getCaptcha(userAgent, data, decoded) {
         count++;
 
         // Check count
-        if (count == 1) {
+        if (count == 50) {
 
             // Send message to channel
             functions.createMessage("Succesfully saved images of 50 runs");
