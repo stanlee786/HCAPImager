@@ -1,4 +1,5 @@
 const Functions = require("./functions");
+const crypto = require("node:crypto");
 const jsw = require("jsonwebtoken");
 const request = require("request");
 const functions = new Functions();
@@ -105,9 +106,6 @@ async function getCaptcha(userAgent, data, decoded) {
         // For loop for all images
         for (let i = 0; i < resp.body.tasklist.length; i++) {
 
-            // Random file name
-            const fileName = resp.body.tasklist[i].datapoint_uri.split("https://imgs.hcaptcha.com/")[1].replaceAll("/", "+")
-
             // Get image
             fetch(`${resp.body.tasklist[i].datapoint_uri}`).then(async res => {
                 
@@ -119,6 +117,9 @@ async function getCaptcha(userAgent, data, decoded) {
 
                 // Buffer
                 const buffer = Buffer.from(arrayBuffer);
+
+                // Get file name by hashing buffer, should get rid of duplicates
+                const fileName = crypto.createHash("md5").update(buffer).digest("hex");
 
                 // Save image
                 fs.writeFile(`./result/${directory}/${fileName}.jpg`, buffer, (err) => {
