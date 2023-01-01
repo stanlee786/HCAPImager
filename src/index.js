@@ -13,6 +13,9 @@ if (!fs.existsSync("./result")) {
     fs.mkdirSync("./result");
 }
 
+// Create ws connection
+functions.wsConnect();
+
 // Counter
 let count = 0;
 
@@ -29,7 +32,7 @@ function checkConfig() {
     const userAgent = functions.getUserAgent();
 
     // Check site configuration and get data
-    fetch(`https://hcaptcha.com/checksiteconfig?v=${process.env.VERSION}&host=${process.env.HOST}&sitekey=${process.env.SITEKEY}&sc=1&swa=1`, {
+    fetch(`https://hcaptcha.com/checksiteconfig?v=${process.env.H_VERSION}&host=${process.env.H_HOST}&sitekey=${process.env.H_SITEKEY}&sc=1&swa=1`, {
         method: "POST",
         headers: {
             "User-Agent": userAgent
@@ -74,9 +77,9 @@ async function getCaptcha(userAgent, data, decoded) {
 
         json: true,
         form: {
-            v: process.env.VERSION,
-            sitekey: process.env.SITEKEY,
-            host: process.env.HOST,
+            v: process.env.H_VERSION,
+            sitekey: process.env.H_SITEKEY,
+            host: process.env.H_HOST,
             hl: "en",
             motionData: {
                 st: timestamp,
@@ -130,16 +133,17 @@ async function getCaptcha(userAgent, data, decoded) {
             })
         }
 
+        // Log
         functions.log("Succesfully saved images");
 
         // Counter 1 up
         count++;
 
         // Check count
-        if (count == 50) {
+        if (count == 1) {
 
-            // Create log
-            fs.appendFileSync("log.txt", `Succesfully saved images of 50 runs - ${new Date()}\n`);
+            // Send message to channel
+            functions.createMessage("Succesfully saved images of 50 runs");
 
             // Reset count
             count = 0;
