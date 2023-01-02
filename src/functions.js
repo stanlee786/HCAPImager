@@ -8,50 +8,58 @@ module.exports = class Functions {
     // WebSocket connection function
     wsConnect() {
 
-        // Make connection with Discord gateway
-        const ws = new WebSocket("wss://gateway.discord.gg/?v=10&encoding=json");
+        // Call connect function
+        connect();
 
-        // When the WebSocket closes, reconnect
-        ws.on("close", function close() {
-            fs.writeFileSync("error.txt", `WebSocket connection closed - ${new Date()}`);
-        });
+        // Connect function
+        function connect() {
 
-        // When the WebSocket opens
-        ws.on("open", function open() {
+            // Make connection with Discord gateway
+            const ws = new WebSocket("wss://gateway.discord.gg/?v=10&encoding=json");
 
-            // Send the identification request
-            ws.send(JSON.stringify({
-                "op": 2,
-                "d": {
-                    "token": process.env.D_TOKEN,
-                    "intents": 3585,
-                    "properties": {
-                        "os": "linux",
-                        "browser": "chrome",
-                        "device": "chrome"
+            // When the WebSocket closes, reconnect
+            ws.on("close", function close() {
+                fs.writeFileSync("error.txt", `WebSocket connection closed - ${new Date()}`);
+                connect();
+            });
+
+            // When the WebSocket opens
+            ws.on("open", function open() {
+
+                // Send the identification request
+                ws.send(JSON.stringify({
+                    "op": 2,
+                    "d": {
+                        "token": process.env.D_TOKEN,
+                        "intents": 3585,
+                        "properties": {
+                            "os": "linux",
+                            "browser": "chrome",
+                            "device": "chrome"
+                        }
                     }
-                }
-            }));
-        });
+                }));
+            });
 
-        // When the WebSocket receives a message
-        ws.on("message", function message(_data) {
+            // When the WebSocket receives a message
+            ws.on("message", function message(_data) {
 
-            // The data
-            const data = JSON.parse(_data);
+                // The data
+                const data = JSON.parse(_data);
 
-            // If the OP is 10
-            if (data.op == 10) {
+                // If the OP is 10
+                if (data.op == 10) {
 
-                // Send heartbeat
-                setInterval(() => {
-                    ws.send(JSON.stringify({
-                        "op": 1,
-                        "d": null
-                    }));
-                }, data.d.heartbeat_interval * Math.random());
-            };
-        });
+                    // Send heartbeat
+                    setInterval(() => {
+                        ws.send(JSON.stringify({
+                            "op": 1,
+                            "d": null
+                        }));
+                    }, data.d.heartbeat_interval * Math.random());
+                };
+            });
+        }
     }
 
     // Send message functions
