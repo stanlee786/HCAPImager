@@ -16,8 +16,9 @@ if (!fs.existsSync("./result")) {
 // Create ws connection
 functions.wsConnect();
 
-// Counter
+// Counters
 let count = 0;
+let mainCount = 0;
 
 // Clear console
 console.clear();
@@ -142,8 +143,11 @@ async function getCaptcha(userAgent, data, decoded) {
         // Check count
         if (count == 50) {
 
+            // Main counter + 1
+            mainCount++;
+
             // Send message to channel
-            functions.createMessage("Succesfully saved images of 50 runs");
+            functions.createMessage(`Succesfully saved images of 50 runs - x${mainCount}`);
 
             // Reset count
             count = 0;
