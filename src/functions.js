@@ -69,8 +69,18 @@ module.exports = class Functions {
         fetch(`https://discord.com/api/v10/channels/${process.env.D_CHANNEL}/messages`, {
             method: "POST",
             headers: {
+                "Accept": "*/*",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Accept-Language": "en-US",
+                "Authorization": `Bot ${process.env.D_TOKEN}`,
                 "Content-Type": "application/json",
-                "Authorization": `Bot ${process.env.D_TOKEN}`
+                "Sec-Fetch-Dest": "empty",
+                "Sec-Fetch-Mode": "cors",
+                "Sec-Fetch-Site": "same-origin",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9008 Chrome/91.0.4472.164 Electron/13.6.6 Safari/537.36",
+                "X-Debug-Options": "bugReporterEnabled",
+                "X-Discord-Locale": "en-GB",
+                "X-Super-Properties": `${process.env.D_PROPERTIES}`
             },
 
             body: JSON.stringify({
