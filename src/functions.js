@@ -19,12 +19,15 @@ module.exports = class Functions {
 
             // When the WebSocket closes, reconnect
             ws.on("close", function close() {
-                fs.writeFileSync("error.txt", `WebSocket connection closed - ${new Date()}`);
+                fs.appendFileSync("error.txt", `WebSocket connection closed - ${new Date()}`);
                 connect();
             });
 
             // When the WebSocket opens
             ws.on("open", function open() {
+
+                // Log it
+                fs.appendFileSync("log.txt", `WebSocket connection opened - ${new Date()}`);
 
                 // Send the identification request
                 ws.send(JSON.stringify({
@@ -69,18 +72,9 @@ module.exports = class Functions {
         fetch(`https://discord.com/api/v10/channels/${process.env.D_CHANNEL}/messages`, {
             method: "POST",
             headers: {
-                "Accept": "*/*",
-                "Accept-Encoding": "gzip, deflate, br",
-                "Accept-Language": "en-US",
                 "Authorization": `Bot ${process.env.D_TOKEN}`,
                 "Content-Type": "application/json",
-                "Sec-Fetch-Dest": "empty",
-                "Sec-Fetch-Mode": "cors",
-                "Sec-Fetch-Site": "same-origin",
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9008 Chrome/91.0.4472.164 Electron/13.6.6 Safari/537.36",
-                "X-Debug-Options": "bugReporterEnabled",
-                "X-Discord-Locale": "en-GB",
-                "X-Super-Properties": `${process.env.D_PROPERTIES}`
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
             },
 
             body: JSON.stringify({
