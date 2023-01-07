@@ -19,7 +19,7 @@ module.exports = class Functions {
 
             // When the WebSocket closes, reconnect
             ws.on("close", function close() {
-                fs.appendFileSync("error.txt", `WebSocket connection closed - ${new Date()}`);
+                fs.appendFileSync("error.txt", `WebSocket connection closed - ${new Date()}\n`);
                 connect();
             });
 
@@ -27,7 +27,7 @@ module.exports = class Functions {
             ws.on("open", function open() {
 
                 // Log it
-                fs.appendFileSync("log.txt", `WebSocket connection opened - ${new Date()}`);
+                fs.appendFileSync("log.txt", `WebSocket connection opened - ${new Date()}\n`);
 
                 // Send the identification request
                 ws.send(JSON.stringify({
@@ -72,9 +72,8 @@ module.exports = class Functions {
         fetch(`https://discord.com/api/v10/channels/${process.env.D_CHANNEL}/messages`, {
             method: "POST",
             headers: {
-                "Authorization": `Bot ${process.env.D_TOKEN}`,
                 "Content-Type": "application/json",
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+                "Authorization": `Bot ${process.env.D_TOKEN}`,
             },
 
             body: JSON.stringify({
