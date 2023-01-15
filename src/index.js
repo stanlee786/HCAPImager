@@ -141,7 +141,7 @@ async function getCaptcha(userAgent, data, decoded) {
         count++;
 
         // Check count
-        if (count == 50) {
+        if (count == 100) {
 
             // Main counter + 1
             mainCount++;
