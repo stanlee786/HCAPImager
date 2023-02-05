@@ -1,6 +1,6 @@
 {
   "name": "hcapimager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Downloads HCAPTCHA image's",
   "main": "index.js",
   "scripts": {

@@ -1,4 +1,5 @@
 const Functions = require("./functions");
+const cluster = require("node:cluster");
 const crypto = require("node:crypto");
 const jsw = require("jsonwebtoken");
 const request = require("request");
@@ -13,18 +14,30 @@ if (!fs.existsSync("./result")) {
     fs.mkdirSync("./result");
 }
 
-// Create ws connection
-functions.wsConnect();
-
 // Counters
 let count = 0;
 let mainCount = 0;
 
-// Clear console
-console.clear();
+// Check if cluster is primary
+if (cluster.isPrimary) {
+    
+    // When worker is primary
+    console.log(`Primary worker "${process.pid}" running`);
 
-// Start program function
-checkConfig();
+    // Fork cluster
+    for (let i = 0; i < 4; i++) {
+        cluster.fork();
+    }
+
+    // On exit
+    cluster.on("exit", function (worker, code, signal) {
+        console.log(`Worker "${worker.process.pid}" died with code "${code}"`);
+    })
+} else {
+    
+    // Start process
+    checkConfig();
+}
 
 // Check site config function
 function checkConfig() {
@@ -57,7 +70,7 @@ function checkConfig() {
                 functions.log(`Invalid type: ${decoded.n}`);
                 setTimeout(() => {
                     checkConfig();
-                }, 1500);
+                }, functions.rdn(1000, 10000));
             }
         })
     })
@@ -95,16 +108,17 @@ async function getCaptcha(userAgent, data, decoded) {
         // Check for error
         if (err) functions.logError(err);
 
+        // Log
         functions.log(`HCAPTCHA Challenge: ${resp.body.requester_question.en}`);
 
-        // Get directory nane
-        const directory = resp.body.requester_question.en.split(" ")[6] ? resp.body.requester_question.en.substr(resp.body.requester_question.en.indexOf(" ") + 31): ""
+        // Get directory name
+        const directory = resp.body.requester_question.en.replaceAll(" ", "_").split("Please_click_each_image_containing_a_")[1];
 
         // Check if directory exists
         if (!fs.existsSync(`./result/${directory}`)) {
 
             // Make directory
-            fs.mkdirSync(`./result/${directory}`)
+            fs.mkdirSync(`./result/${directory}`);
         }
         
         // For loop for all images
@@ -156,6 +170,6 @@ async function getCaptcha(userAgent, data, decoded) {
         // Loop
         setTimeout(() => {
             checkConfig();
-        }, 1500);
+        }, functions.rdn(1000, 10000));
     })
 }

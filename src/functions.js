@@ -5,87 +5,59 @@ const fs = require("node:fs");
 // Functions class
 module.exports = class Functions {
 
-    // WebSocket connection function
-    wsConnect() {
-
-        // Call connect function
-        connect();
-
-        // Connect function
-        function connect() {
-
-            // Make connection with Discord gateway
-            const ws = new WebSocket("wss://gateway.discord.gg/?v=10&encoding=json");
-
-            // When the WebSocket closes, reconnect
-            ws.on("close", function close() {
-                fs.appendFileSync("error.txt", `WebSocket connection closed - ${new Date()}\n`);
-                connect();
-            });
-
-            // When the WebSocket opens
-            ws.on("open", function open() {
-
-                // Log it
-                fs.appendFileSync("log.txt", `WebSocket connection opened - ${new Date()}\n`);
-
-                // Send the identification request
-                ws.send(JSON.stringify({
-                    "op": 2,
-                    "d": {
-                        "token": process.env.D_TOKEN,
-                        "intents": 3585,
-                        "properties": {
-                            "os": "linux",
-                            "browser": "chrome",
-                            "device": "chrome"
-                        }
-                    }
-                }));
-            });
-
-            // When the WebSocket receives a message
-            ws.on("message", function message(_data) {
-
-                // The data
-                const data = JSON.parse(_data);
-
-                // If the OP is 10
-                if (data.op == 10) {
-
-                    // Send heartbeat
-                    setInterval(() => {
-                        ws.send(JSON.stringify({
-                            "op": 1,
-                            "d": null
-                        }));
-                    }, data.d.heartbeat_interval * Math.random());
-                };
-            });
-        }
-    }
-
     // Send message functions
     createMessage(message) {
 
-        // Post to channel
-        fetch(`https://discord.com/api/v10/channels/${process.env.D_CHANNEL}/messages`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bot ${process.env.D_TOKEN}`,
-            },
+        // Make connection with Discord gateway
+        const ws = new WebSocket("wss://gateway.discord.gg/?v=10&encoding=json");
 
-            body: JSON.stringify({
-                content: message,
-                nonce: Math.floor(Math.random() * 10000000000000000000),
-                tts: false
-            })
-        }).then(res => {
+        // When the WebSocket connection opens
+        ws.on("open", function () {
 
-            // Check status code
-            if (res.status !== 200) {
-                fs.appendFileSync("log.txt", `Succesfully saved images of 50 runs - ${new Date()}\n`, "utf-8");
+            // Send the identification request
+            ws.send(JSON.stringify({
+                op: 2,
+                d: {
+                    token: process.env.D_TOKEN,
+                    intents: 3585,
+                    properties: {
+                        os: "linux",
+                        browser: "chrome",
+                        device: "chrome"
+                    }
+                }
+            }))
+        })
+
+        // When the WebSocket receives a message
+        ws.on("message", function (_data) {
+
+            // Request data
+            const data = JSON.parse(_data);
+
+            // If OP 10
+            if (data.op == 10) {
+
+                // Post to channel
+                fetch(`https://discord.com/api/v10/channels/${process.env.D_CHANNEL}/messages`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bot ${process.env.D_TOKEN}`,
+                    },
+
+                    body: JSON.stringify({
+                        content: message,
+                        nonce: Math.floor(Math.random() * 10000000000000000000),
+                        tts: false
+                    })
+                }).then(res => {
+
+                    // Check status code
+                    if (res.status !== 200) {
+                        fs.appendFileSync("log.txt", `Succesfully saved images of 100 runs - ${new Date()}\n`, "utf-8");
+                    }
+                })
             }
         })
     }
