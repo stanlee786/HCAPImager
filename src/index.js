@@ -13,6 +13,7 @@ if (cluster.isPrimary) {
     // Counters
     let count = 0;
     let mainCount = 0;
+    let workerCount = 0;
 
     // Check if result folder exists
     if (!fs.existsSync("./result")) {
@@ -46,22 +47,21 @@ if (cluster.isPrimary) {
             })
         } else if (msg.topic == "MAIN_COUNT") {
 
-            // Increase counter
-            mainCount += 1;
+            // Check worker count
+            if (workerCount == 0) {
 
-            // Loop
-            Object.keys(cluster.workers).forEach((id) => {
+                // Increase worker count
+                workerCount += 1;
 
-                // Send message
-                cluster.workers[id].send({
-                    topic: "MAIN_COUNT",
-                    value: mainCount
-                })
-            })
-        } else if (msg.topic == "RESET_COUNT") {
+                // Increase counter
+                mainCount += 1;
 
-            // Reset counter
-            count = 0;
+                // Reset counter
+                count = 0;
+
+                // Send message to channel
+                functions.createMessage(`Succesfully saved images of 100 runs - x${mainCount}`);
+            }
         }
     })
 
@@ -209,22 +209,6 @@ if (cluster.isPrimary) {
                         // Main counter + 1
                         process.send({
                             topic: "MAIN_COUNT"
-                        })
-
-                        // On message
-                        process.on("message", (msg) => {
-
-                            // Check message
-                            if (msg.topic == "MAIN_COUNT") {
-
-                                // Send message to channel
-                                functions.createMessage(`Succesfully saved images of 100 runs - x${msg.value}`);
-
-                                // Reset count
-                                process.send({
-                                    topic: "RESET_COUNT"
-                                })  
-                            }
                         })
                     }
                 }
