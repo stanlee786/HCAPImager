@@ -1,3 +1,4 @@
+const process = require("node:process");
 const puppeteer = require("puppeteer");
 const { WebSocket } = require("ws");
 const fs = require("node:fs");
