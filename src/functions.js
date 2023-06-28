@@ -78,13 +78,12 @@ module.exports = class Functions {
                     // Create new headless browser
                     const browser = await puppeteer.launch({
                         ignoreHTTPSErrors: true,
-                        headless: true,
+                        headless: "new",
                         args: [
                             `--window-size=1300,570`,
                             "--window-position=000,000",
                             "--disable-dev-shm-usage",
                             "--no-sandbox",
-                            '--user-data-dir="/tmp/chromium"',
                             "--disable-web-security",
                             "--disable-features=site-per-process",
                         ]

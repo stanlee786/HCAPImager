@@ -156,7 +156,8 @@ async function getCaptcha(userAgent, data, decoded) {
         functions.log(`HCAPTCHA Challenge: ${resp.body.requester_question.en}`);
 
         // Get directory name
-        const directory = resp.body.requester_question.en.replaceAll(" ", "_").split("Please_click_each_image_containing_a_")[1];
+        let directory = resp.body.requester_question.en.replaceAll(" ", "_");
+        directory = directory.replaceAll("?", "");
 
         // Check if directory exists
         if (!fs.existsSync(`./result/${directory}`)) {
