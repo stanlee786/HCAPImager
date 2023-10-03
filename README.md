@@ -26,6 +26,8 @@ currently configurated to download HCAPTCHA images using Discord (this can easil
 
 FOR EDUCATIONAL PURPOSES ONLY, I AM NOT RESPONSIBLE FOR ANY POTENTIAL DAMAGE CAUSED
 
+<br>
+
 ### Requirements
 
 To run this application `NodeJS` is required, you will also need to create a `.env` file
