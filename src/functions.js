@@ -1,66 +1,14 @@
-const process = require("node:process");
 const puppeteer = require("puppeteer");
-const { WebSocket } = require("ws");
 const fs = require("node:fs");
 
 // Functions class
 module.exports = class Functions {
 
     // Send message functions
-    createMessage(message) {
+    createMessage() {
 
-        // Make connection with Discord gateway
-        const ws = new WebSocket("wss://gateway.discord.gg/?v=10&encoding=json");
-
-        // When the WebSocket connection opens
-        ws.on("open", function () {
-
-            // Send the identification request
-            ws.send(JSON.stringify({
-                op: 2,
-                d: {
-                    token: process.env.D_TOKEN,
-                    intents: 3585,
-                    properties: {
-                        os: "linux",
-                        browser: "chrome",
-                        device: "chrome"
-                    }
-                }
-            }))
-        })
-
-        // When the WebSocket receives a message
-        ws.on("message", function (_data) {
-
-            // Request data
-            const data = JSON.parse(_data);
-
-            // If OP 10
-            if (data.op == 10) {
-
-                // Post to channel
-                fetch(`https://discord.com/api/v10/channels/${process.env.D_CHANNEL}/messages`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bot ${process.env.D_TOKEN}`,
-                    },
-
-                    body: JSON.stringify({
-                        content: message,
-                        nonce: Math.floor(Math.random() * 10000000000000000000),
-                        tts: false
-                    })
-                }).then(res => {
-
-                    // Check status code
-                    if (res.status !== 200) {
-                        fs.appendFileSync("log.txt", `Succesfully saved images of 100 runs - ${new Date()}\n`, "utf-8");
-                    }
-                })
-            }
-        })
+        // Log progress
+        fs.appendFileSync("log.txt", `Succesfully saved images of 100 runs - ${new Date()}\n`, "utf-8");
     }
 
     // Get NData function

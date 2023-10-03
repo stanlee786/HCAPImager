@@ -14,7 +14,6 @@ if (cluster.isPrimary) {
     
     // Counters
     let count = 0;
-    let mainCount = 0;
     let workerCount = 0;
 
     // Check if result folder exists
@@ -55,14 +54,11 @@ if (cluster.isPrimary) {
                 // Increase worker count
                 workerCount += 1;
 
-                // Increase counter
-                mainCount += 1;
-
                 // Reset counter
                 count = 0;
 
                 // Send message to channel
-                functions.createMessage(`Succesfully saved images of 100 runs - x${mainCount}`);
+                functions.createMessage();
             }
         }
     })
@@ -90,7 +86,7 @@ function checkConfig() {
     const userAgent = functions.getUserAgent();
 
     // Check site configuration and get data
-    fetch(`https://hcaptcha.com/checksiteconfig?v=${process.env.H_VERSION}&host=${process.env.H_HOST}&sitekey=${process.env.H_SITEKEY}&sc=1&swa=1`, {
+    fetch(`https://hcaptcha.com/checksiteconfig?v=${process.env.H_VERSION}&host=${process.env.H_HOST}&sitekey=${process.env.H_SITEKEY}&sc=1&swa=1&spst=0`, {
         method: "POST",
         headers: {
             "User-Agent": userAgent
