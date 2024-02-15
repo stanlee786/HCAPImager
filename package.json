@@ -1,6 +1,6 @@
 {
   "name": "hcapimager",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Downloads HCAPTCHA image's",
   "main": "index.js",
   "scripts": {
@@ -9,12 +9,12 @@
   "author": "stanlee786",
   "license": "MIT",
   "dependencies": {
-    "jsonwebtoken": "^9",
-    "puppeteer": "^21",
-    "request": "^2"
+    "jsonwebtoken": "^9.0",
+    "puppeteer": "^22.0",
+    "request": "^2.88"
   },
   "devDependencies": {
-    "dotenv": "^16",
-    "eslint": "^8"
+    "dotenv": "^16.4",
+    "eslint": "^8.56"
   }
 }
