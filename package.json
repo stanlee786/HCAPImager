@@ -14,7 +14,9 @@
     "request": "^2.88"
   },
   "devDependencies": {
+    "@eslint/js": "^9.9",
     "dotenv": "^16.4",
-    "eslint": "^9.9"
+    "eslint": "^9.9",
+    "globals": "^15.9"
   }
 }
